@@ -10,24 +10,28 @@ export default function App() {
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Speed Typer</Text>
       <View style={styles.testWrapper}>
-        <Text style={styles.testText}>{currentTest}</Text>
-      </View>
-      <View style={styles.results}>
-        <Text style={styles.test}>{[...input].map((char, index) => 
-          (char === currentTest[index] ?
-          <Text style={styles.correct}>{char}</Text> : <Text style={styles.incorrect}>{char}</Text>)
-        )}</Text>
+        <View style={styles.results}>
+          <Text style={styles.testText}>{currentTest}</Text>
+          <Text style={styles.test}>{[...input].map((char, index) => 
+            (char === currentTest[index] ?
+            <Text style={styles.correct} key={index}>{char}</Text> : <Text style={styles.incorrect} key={index}>{char}</Text>)
+          )}</Text>
+        </View>
+        <View styles={styles.keyboardWrapper}>
+          <KeyboardAvoidingView
+            style={styles.keyboard}
+            >
+            <TextInput 
+              style={styles.input}
+              placeholder='Start typing to begin!'
+              placeholderTextColor='white'
+              onChangeText={ newText => setInput(newText)}
+              defaultValue={input}
+              />
 
+          </KeyboardAvoidingView>
+        </View>
       </View>
-      <KeyboardAvoidingView>
-        <TextInput 
-          style={styles.input}
-          placeholder='Type here'
-          onChangeText={ newText => setInput(newText)}
-          defaultValue={input}
-        />
-
-      </KeyboardAvoidingView>
       <StatusBar style="auto" />
     </SafeAreaView>
   );
@@ -36,27 +40,49 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#1c1c1c',
     alignItems: 'center',
     justifyContent: 'start',
   },
   title: {
     fontSize: 20,
     padding: 20,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    color: 'white'
   },
   testWrapper: {
-    height: '30%',
-    backgroundColor: 'darkgrey',
+    // flex: 1,
+    justifyContent: 'start',
+    alignItems: 'center',
+    width: '90%',
+    margin: 16,
+    padding: 20,
+    backgroundColor: 'rgba(255,255, 255, 0.1)',
   },
-  testText: {},
+  testText: {
+    color: 'white',
+    paddingBottom: 8,
+  },
   results: {},
-  test: {},
-  input: {},
+  test: {
+  },
+  keyboardWrapper: {
+    width: '100%',
+  },
+  keyboard: {
+    margin: 16,
+  },
+  input: {
+    color: 'white',
+    marginTop: 8,
+    padding: 8,
+    borderColor: 'white',
+    borderWidth: 2
+  },
   correct: {
-    color: 'lime'
+    backgroundColor: 'rgba(191, 255, 0, 0.8)'
   },
   incorrect: {
-    color: 'red'
+    backgroundColor: 'rgba(255, 0, 0, 0.8)'
   },
 });
