@@ -53,11 +53,14 @@ export default function App() {
       <View style={styles.testWrapper}>
         <View style={styles.results}>
           <Text style={styles.timer}>{timer.toFixed(1)} s</Text>
-          <Text style={styles.testText}>{currentTest}</Text>
-          <Text style={styles.test}>{[...input].map((char, index) => 
-            (char === currentTest[index] ?
-            <Text style={styles.correct} key={index}>{char}</Text> : <Text style={styles.incorrect} key={index}>{char}</Text>)
-          )}</Text>
+          <Text style={styles.test}>{[...currentTest].map((char, index) =>  
+            input[index] === undefined ? 
+            <Text style={styles.testText} key={index}>{char}</Text> : 
+            char === input[index] ? 
+            <Text style={styles.correct} key={index}>{char}</Text> : 
+            <Text style={styles.incorrect} key={index}>{char}</Text>
+            )}
+          </Text>
         </View>
         <View styles={styles.keyboardWrapper}>
           <KeyboardAvoidingView
@@ -72,13 +75,13 @@ export default function App() {
               />
 
           </KeyboardAvoidingView>
+        </View>
           <TouchableOpacity
             style={styles.resetButton}
             onPress={() => handleReset()}
           ><Text style={styles.resetText}>Reset</Text></TouchableOpacity>
-        </View>
       </View>
-      <StatusBar style="auto" />
+      <StatusBar style="light"/>
     </SafeAreaView>
   );
 }
@@ -106,8 +109,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255, 255, 0.1)',
   },
   testText: {
-    color: 'white',
-    paddingBottom: 8,
+    color: 'gray',
   },
   timer: {
     textAlign: 'center',
@@ -116,17 +118,17 @@ const styles = StyleSheet.create({
   },
   results: {},
   test: {
+    paddingVertical: 8,
   },
   keyboardWrapper: {
     width: '100%',
   },
   keyboard: {
-    margin: 16,
+    marginVertical: 16,
   },
   input: {
     textAlign: 'center',
     color: 'white',
-    marginTop: 8,
     padding: 8,
     borderColor: 'white',
     borderWidth: 2
@@ -134,18 +136,21 @@ const styles = StyleSheet.create({
   resetButton: {
     textAlign: 'center',
     color: 'white',
-    // marginTop: 8,
-    padding: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
     borderColor: 'white',
     borderWidth: 2
   },
   resetText: {
     color: 'white',
+    textAlign: 'center',
   },
   correct: {
-    backgroundColor: 'rgba(191, 255, 0, 0.8)'
+    backgroundColor: 'rgba(0, 255, 0, 0.4)',
+    color: 'white',
   },
   incorrect: {
-    backgroundColor: 'rgba(255, 0, 0, 0.8)'
+    backgroundColor: 'rgba(255, 0, 0, 0.4)',
+    color: 'white',
   },
 });
