@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, TextInput, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, TextInput, KeyboardAvoidingView, TouchableOpacity } from 'react-native';
 
 export default function App() {
   const [input, setInput] = useState('');
@@ -21,6 +21,13 @@ export default function App() {
     if (newText.length >= 1 && newText.slice(0, -1) === currentTest.slice(0, newText.length-1)){
       setInput(newText);
     }
+  }
+  function handleReset(){
+    setInput('');
+    setStartTime(0);
+    setTimer(0);
+    setIsActive(false);
+    setIsDone(false);
   }
   useEffect(() => {
     let interval = null;
@@ -65,6 +72,10 @@ export default function App() {
               />
 
           </KeyboardAvoidingView>
+          <TouchableOpacity
+            style={styles.resetButton}
+            onPress={() => handleReset()}
+          ><Text style={styles.resetText}>Reset</Text></TouchableOpacity>
         </View>
       </View>
       <StatusBar style="auto" />
@@ -119,6 +130,17 @@ const styles = StyleSheet.create({
     padding: 8,
     borderColor: 'white',
     borderWidth: 2
+  },
+  resetButton: {
+    textAlign: 'center',
+    color: 'white',
+    // marginTop: 8,
+    padding: 8,
+    borderColor: 'white',
+    borderWidth: 2
+  },
+  resetText: {
+    color: 'white',
   },
   correct: {
     backgroundColor: 'rgba(191, 255, 0, 0.8)'
