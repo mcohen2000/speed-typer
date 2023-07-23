@@ -37,11 +37,11 @@ export default function App() {
     try {
       const prevData = await AsyncStorage.getItem(`${value.key}`);
       if (prevData === null){
-        const jsonValue = JSON.stringify([value.time]);
+        const jsonValue = JSON.stringify([{created: value.created, time: value.time}]);
         await AsyncStorage.setItem(value.key, jsonValue);
 
       } else{
-        const jsonValue = JSON.stringify([...JSON.parse(prevData), value.time]);
+        const jsonValue = JSON.stringify([...JSON.parse(prevData), {created: value.created, time: value.time}]);
         await AsyncStorage.setItem(value.key, jsonValue);
       }
     } catch (e) {
@@ -73,11 +73,13 @@ export default function App() {
       }, 100);
     };
     if(input === testTexts[currentTest]){
+      let finishTime = Date.now();
       setIsActive(false);
       setIsDone(true);
       if(isDone===true){
-        storeData({key: `${currentTest}`, time: timer.toFixed(1) });
-        setResults((prev) => [...prev, `${timer.toFixed(1)}`])
+        storeData({key: `${currentTest}`, created: finishTime, time: timer.toFixed(1) });
+        setResults((prev) => [...prev, {created: finishTime, time: `${timer.toFixed(1)}`}])
+        handleReset();
       };
       clearInterval(interval);
     };
@@ -95,7 +97,7 @@ export default function App() {
       <Text style={styles.title}>Speed Typer</Text>
       <View style={styles.testWrapper}>
         <View style={styles.currentResults}>
-          <Text style={styles.timer}>{timer.toFixed(1)} s</Text>
+          <Text style={styles.timer}>{timer.toFixed(1)}s</Text>
           <Text style={styles.test}>{[...testTexts[currentTest]].map((char, index) =>  
             input[index] === undefined ? 
             <Text style={styles.testText} key={index}>{char}</Text> : 
@@ -119,18 +121,39 @@ export default function App() {
 
           </KeyboardAvoidingView>
         </View>
-          <TouchableOpacity
+        <TouchableOpacity
             style={styles.resetButton}
             onPress={() => handleReset()}
-          ><Text style={styles.resetText}>Reset</Text></TouchableOpacity>
-          <TouchableOpacity
+        >
+          <Text style={styles.resetText}>Reset</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
             style={styles.clearButton}
             onPress={() => clearData({key: `${currentTest}`})}
-          ><Text style={styles.clearText}>Clear Data</Text></TouchableOpacity>
+        >
+          <Text style={styles.clearText}>Clear Data</Text>
+        </TouchableOpacity>
       </View>
+      {results.length > 0 ? 
       <View style={styles.prevResults}>
-        {results.map((item, index) => <Text style={styles.prevResultText} key={`${index}`}>{item}s</Text>)}
+        <Text style={styles.sectionHeader}>Results</Text>
+        {results.map((item, index) => {
+          let date = new Date(item.created);
+          let currentDate = new Date(Date.now());
+          let dateStr = null;
+          if(`${currentDate.getMonth()+1}/${currentDate.getDate()}/${currentDate.getFullYear()}` === `${date.getMonth()+1}/${date.getDate()}/${date.getFullYear()}`){
+            dateStr = `${date.getHours()}:${date.getMinutes() < 10 ? `0` + date.getMinutes() : date.getMinutes()}`;
+          } else{
+            dateStr = `${date.getMonth()+1}/${date.getDate()}/${date.getFullYear()}`
+          }
+          return (
+          <View style={index%2===0 ? styles.resultWrapper : styles.resultWrapper2} key={`${index}`}>
+              <Text style={styles.prevResultDate}>{dateStr}</Text>
+              <Text style={styles.prevResultTime}>{item.time}s</Text>
+          </View>
+          )})}
       </View>
+      : <></>}
       <StatusBar style="light"/>
     </SafeAreaView>
   );
@@ -151,6 +174,10 @@ const styles = StyleSheet.create({
   },
   testWrapper: {
     // flex: 1,
+    borderRadius: 16,
+    overflow: 'hidden',
+    borderColor: 'white',
+    borderWidth: 2,
     justifyContent: 'start',
     alignItems: 'center',
     width: '90%',
@@ -167,9 +194,48 @@ const styles = StyleSheet.create({
     fontSize: 32,
   },
   currentResults: {},
-  prevResults: {
+  sectionHeader: {
+    color: 'white',
+    fontSize: 24,
+    paddingVertical: 16,
   },
-  prevResultText: {
+  prevResults: {
+    // flex: 1,
+    borderRadius: 16,
+    overflow: 'hidden',
+    borderColor: 'white',
+    borderWidth: 2,
+    justifyContent: 'start',
+    alignItems: 'center',
+    width: '90%',
+    margin: 16,
+    // padding: 20,
+    backgroundColor: 'rgba(255,255, 255, 0.1)',
+  },
+  resultWrapper: {
+    flexDirection: 'row',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    backgroundColor: 'rgba(255,255, 255, 0.1)',
+  },
+  resultWrapper2: {
+    flexDirection: 'row',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    // backgroundColor: 'red',
+    
+  },
+  prevResultDate: {
+    color: 'rgba(255,255,255,0.5)'
+  },
+  prevResultTime: {
+    fontSize: 24,
     color: 'white'
   },
     
@@ -180,7 +246,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   keyboard: {
-    marginVertical: 16,
+    marginTop: 8,
   },
   input: {
     textAlign: 'center',
@@ -190,6 +256,7 @@ const styles = StyleSheet.create({
     borderWidth: 2
   },
   resetButton: {
+    marginVertical: 8,
     textAlign: 'center',
     color: 'white',
     paddingHorizontal: 16,
