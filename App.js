@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, TextInput, KeyboardAvoidingView, TouchableOpacity, Modal, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity, Modal, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function App() {
@@ -109,33 +109,33 @@ export default function App() {
             )}
           </Text>
         </View>
-        <View styles={styles.keyboardWrapper}>
-          <TextInput 
-            style={styles.input}
-            placeholder='Start typing to begin!'
-            placeholderTextColor='white'
-            onChangeText={newText => handleStart(newText)}
-            value={input}
-            />
+        <TextInput 
+          style={styles.input}
+          placeholder='Start typing to begin!'
+          placeholderTextColor='white'
+          onChangeText={newText => handleStart(newText)}
+          value={input}
+        />
+        <View style={styles.buttonsWrapper}>
+          <TouchableOpacity
+              style={styles.resetButton}
+              onPress={() => handleReset()}
+          >
+            <Text style={styles.resetText}>Reset</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+              style={styles.resultsButton}
+              onPress={() => setShowResults(true)}
+          >
+            <Text style={styles.resetText}>Results</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+              style={styles.clearButton}
+              onPress={() => clearData({key: `${currentTest}`})}
+          >
+            <Text style={styles.clearText}>Clear Data</Text>
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity
-            style={styles.resetButton}
-            onPress={() => handleReset()}
-        >
-          <Text style={styles.resetText}>Reset</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-            style={styles.resultsButton}
-            onPress={() => setShowResults(true)}
-        >
-          <Text style={styles.resetText}>Results</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-            style={styles.clearButton}
-            onPress={() => clearData({key: `${currentTest}`})}
-        >
-          <Text style={styles.clearText}>Clear Data</Text>
-        </TouchableOpacity>
       </View>
       <Modal
         visible= {showResults}
@@ -175,8 +175,6 @@ export default function App() {
             </View>
           </View>
         </Modal>
-      {/* {showResults === true ? 
-          : <View style={styles.hiddenResults}></View>} */}
       <StatusBar style="light"/>
     </SafeAreaView>
   );
@@ -234,24 +232,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderColor: 'white',
   },
-  hiddenResults: {
-    position: 'absolute',
-    top: '100%',
-    left: 0,
-    borderRadius: 16,
-    overflow: 'hidden',
-    borderColor: 'white',
-    borderWidth: 2,
-    justifyContent: 'start',
-    alignItems: 'center',
-    width: '100%',
-    height: '100%',
-    // margin: 16,
-    // padding: 20,
-    backgroundColor: 'rgba(56, 56, 56, 1)',
-  },
   modalHeader: {
-    
     width: '100%',
     borderBottomColor: 'white',
     borderBottomWidth: 2,
@@ -324,9 +305,6 @@ const styles = StyleSheet.create({
   test: {
     paddingVertical: 8,
   },
-  keyboardWrapper: {
-    minWidth: '100%',
-  },
   input: {
     marginTop: 8,
     minWidth: '100%',
@@ -336,8 +314,17 @@ const styles = StyleSheet.create({
     borderColor: 'white',
     borderWidth: 2
   },
-  resetButton: {
+  buttonsWrapper: {
+    width: '100%',
     marginTop: 8,
+    gap: 8,
+    rowGap: 0,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  resetButton: {
     textAlign: 'center',
     color: 'white',
     paddingHorizontal: 16,
