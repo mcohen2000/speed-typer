@@ -110,18 +110,13 @@ export default function App() {
           </Text>
         </View>
         <View styles={styles.keyboardWrapper}>
-          <KeyboardAvoidingView
-            style={styles.keyboard}
-            >
-            <TextInput 
-              style={styles.input}
-              placeholder='Start typing to begin!'
-              placeholderTextColor='white'
-              onChangeText={newText => handleStart(newText)}
-              value={input}
-              />
-
-          </KeyboardAvoidingView>
+          <TextInput 
+            style={styles.input}
+            placeholder='Start typing to begin!'
+            placeholderTextColor='white'
+            onChangeText={newText => handleStart(newText)}
+            value={input}
+            />
         </View>
         <TouchableOpacity
             style={styles.resetButton}
@@ -330,12 +325,11 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   keyboardWrapper: {
-    width: '100%',
-  },
-  keyboard: {
-    marginTop: 8,
+    minWidth: '100%',
   },
   input: {
+    marginTop: 8,
+    minWidth: '100%',
     textAlign: 'center',
     color: 'white',
     padding: 8,
