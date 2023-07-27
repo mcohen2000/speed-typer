@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, TextInput, KeyboardAvoidingView, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, TextInput, KeyboardAvoidingView, TouchableOpacity, Modal, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function App() {
@@ -12,6 +12,7 @@ export default function App() {
   const [isActive, setIsActive] = useState(false);
   const [isDone, setIsDone] = useState(false);
   const [results, setResults] = useState([]);
+  const [showResults, setShowResults] = useState(false);
   function handleStart(newText){
     if(!isActive && !isDone){
       setStartTime(Date.now());
@@ -79,6 +80,7 @@ export default function App() {
       if(isDone===true){
         storeData({key: `${currentTest}`, created: finishTime, time: timer.toFixed(1) });
         setResults((prev) => [...prev, {created: finishTime, time: `${timer.toFixed(1)}`}])
+        setShowResults(true);
         handleReset();
       };
       clearInterval(interval);
@@ -128,32 +130,58 @@ export default function App() {
           <Text style={styles.resetText}>Reset</Text>
         </TouchableOpacity>
         <TouchableOpacity
+            style={styles.resultsButton}
+            onPress={() => setShowResults(true)}
+        >
+          <Text style={styles.resetText}>Results</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
             style={styles.clearButton}
             onPress={() => clearData({key: `${currentTest}`})}
         >
           <Text style={styles.clearText}>Clear Data</Text>
         </TouchableOpacity>
       </View>
-      {results.length > 0 ? 
-      <View style={styles.prevResults}>
-        <Text style={styles.sectionHeader}>Results</Text>
-        {results.map((item, index) => {
-          let date = new Date(item.created);
-          let currentDate = new Date(Date.now());
-          let dateStr = null;
-          if(`${currentDate.getMonth()+1}/${currentDate.getDate()}/${currentDate.getFullYear()}` === `${date.getMonth()+1}/${date.getDate()}/${date.getFullYear()}`){
-            dateStr = `${date.getHours()}:${date.getMinutes() < 10 ? `0` + date.getMinutes() : date.getMinutes()}`;
-          } else{
-            dateStr = `${date.getMonth()+1}/${date.getDate()}/${date.getFullYear()}`
-          }
-          return (
-          <View style={index%2===0 ? styles.resultWrapper : styles.resultWrapper2} key={`${index}`}>
-              <Text style={styles.prevResultDate}>{dateStr}</Text>
-              <Text style={styles.prevResultTime}>{item.time}s</Text>
+      <Modal
+        visible= {showResults}
+        onRequestClose={() => setShowResults(false)}
+        animationType='slide'
+      >
+          <View style={styles.prevResults}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.sectionHeader}>Results</Text>
+            </View>
+            <ScrollView style={styles.resultsScroll}>
+              <View style={styles.resultsScrollWrapper}>
+                {results.map((item, index) => {
+                  let date = new Date(item.created);
+                  let currentDate = new Date(Date.now());
+                  let dateStr = null;
+                  if(`${currentDate.getMonth()+1}/${currentDate.getDate()}/${currentDate.getFullYear()}` === `${date.getMonth()+1}/${date.getDate()}/${date.getFullYear()}`){
+                    dateStr = `${date.getHours()}:${date.getMinutes() < 10 ? `0` + date.getMinutes() : date.getMinutes()}`;
+                  } else{
+                    dateStr = `${date.getMonth()+1}/${date.getDate()}/${date.getFullYear()}`
+                  }
+                  return (
+                    <View style={index%2===0 ? styles.resultWrapper : styles.resultWrapper2} key={`${index}`}>
+                      <Text style={styles.prevResultDate}>{dateStr}</Text>
+                      <Text style={styles.prevResultTime}>{item.time}s</Text>
+                  </View>
+                  )})}
+              </View>
+
+            </ScrollView>
+            <View style={styles.closeButtonWrapper}>
+              <TouchableOpacity style={styles.closeButton}
+                onPress={() => setShowResults(false)}
+              >
+                <Text style={styles.closeButtonText}>&#10005;</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-          )})}
-      </View>
-      : <></>}
+        </Modal>
+      {/* {showResults === true ? 
+          : <View style={styles.hiddenResults}></View>} */}
       <StatusBar style="light"/>
     </SafeAreaView>
   );
@@ -161,10 +189,12 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
+    height: '100%',
     flex: 1,
     backgroundColor: '#1c1c1c',
     alignItems: 'center',
     justifyContent: 'start',
+    overflow: 'hidden',
   },
   title: {
     fontSize: 20,
@@ -195,22 +225,80 @@ const styles = StyleSheet.create({
   },
   currentResults: {},
   sectionHeader: {
+    width: '100%',
+    // backgroundColor: 'red',
+    paddingTop: 32,
     color: 'white',
+    textAlign: 'center',
     fontSize: 24,
-    paddingVertical: 16,
+    paddingBottom: 24,
+    // borderColor: 'none',
+    borderTopWidth: 0,
+    borderLeftWidth: 0,
+    borderRightWidth: 0,
+    borderBottomWidth: 2,
+    borderColor: 'white',
   },
-  prevResults: {
-    // flex: 1,
+  hiddenResults: {
+    position: 'absolute',
+    top: '100%',
+    left: 0,
     borderRadius: 16,
     overflow: 'hidden',
     borderColor: 'white',
     borderWidth: 2,
     justifyContent: 'start',
     alignItems: 'center',
-    width: '90%',
-    margin: 16,
+    width: '100%',
+    height: '100%',
+    // margin: 16,
     // padding: 20,
-    backgroundColor: 'rgba(255,255, 255, 0.1)',
+    backgroundColor: 'rgba(56, 56, 56, 1)',
+  },
+  modalHeader: {
+    
+    width: '100%',
+    borderBottomColor: 'white',
+    borderBottomWidth: 2,
+  },
+  closeButtonWrapper: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    borderTopColor: 'white',
+    borderTopWidth: 2,
+  },
+  closeButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 40,
+    height: 40,
+    borderWidth: 2,
+    borderColor: 'white',
+    borderRadius: '100%',
+    marginVertical: 16,
+  },
+  closeButtonText: {
+    fontSize: 24,
+    textAlign: 'center',
+    color: 'white',
+  },
+  prevResults: {
+    overflow: 'hidden',
+    justifyContent: 'start',
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#1c1c1c',
+  },
+  resultsScroll: {
+    backgroundColor: 'rgba(56, 56, 56, 1)',
+    overflow: 'hidden',
+    width: '100%',
+    // height: '50%',
+  },
+  resultsScrollWrapper: {
+    flexDirection: 'column-reverse'
   },
   resultWrapper: {
     flexDirection: 'row',
@@ -228,7 +316,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     width: '100%',
-    // backgroundColor: 'red',
     
   },
   prevResultDate: {
@@ -256,7 +343,7 @@ const styles = StyleSheet.create({
     borderWidth: 2
   },
   resetButton: {
-    marginVertical: 8,
+    marginTop: 8,
     textAlign: 'center',
     color: 'white',
     paddingHorizontal: 16,
@@ -267,6 +354,15 @@ const styles = StyleSheet.create({
   resetText: {
     color: 'white',
     textAlign: 'center',
+  },
+  resultsButton: {
+    marginVertical: 8,
+    textAlign: 'center',
+    color: 'white',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderColor: 'white',
+    borderWidth: 2
   },
   clearButton: {
     textAlign: 'center',
