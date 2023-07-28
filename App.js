@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function App() {
   const [input, setInput] = useState('');
-  const testTexts = ['The quick brown fox jumps over the lazy dog.']
+  const testTexts = ['The quick brown fox jumps over the lazy dog.', `React Native lets you create truly native apps and doesn’t compromise your users’ experiences. It provides a core set of platform agnostic native components like View, Text, and Image that map directly to the platform’s native UI building blocks.`]
   const [currentTest, setCurrentTest] = useState(0);
   const [startTime, setStartTime] = useState(0);
   const [timer, setTimer] = useState(0);
@@ -91,7 +91,7 @@ export default function App() {
   }, [input, isActive])
   useEffect(() => {
     getData();
-  }, [])
+  }, [currentTest])
 
 
   return (
@@ -122,12 +122,6 @@ export default function App() {
               onPress={() => handleReset()}
           >
             <Text style={styles.resetText}>Reset</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-              style={styles.resultsButton}
-              onPress={() => setShowResults(true)}
-          >
-            <Text style={styles.resetText}>Results</Text>
           </TouchableOpacity>
           <TouchableOpacity
               style={styles.clearButton}
@@ -175,6 +169,49 @@ export default function App() {
             </View>
           </View>
         </Modal>
+        <View style={styles.bottomNavbar}>
+          {currentTest > 0 ? 
+          <TouchableOpacity
+              style={[styles.leftArrowButton, styles.arrowButton]}
+              onPress={() => {
+                setCurrentTest(prev => prev-1)
+              }}
+          >
+            <Text style={styles.leftArrowButtonText}>&#9664;</Text>
+          </TouchableOpacity> :
+          <TouchableOpacity
+            style={[styles.leftArrowButton, styles.disabledArrowButton]}
+            
+          >
+            <Text style={styles.leftDisabledArrowButtonText}>&#9664;</Text>
+          </TouchableOpacity>
+          }
+          <TouchableOpacity
+              style={styles.resultsButton}
+              activeOpacity={1}
+              onPress={() => setShowResults(true)}
+          >
+            {/* <Text></Text> */}
+            <Text style={styles.resultsText} numberOfLines={1}>Results</Text>
+          </TouchableOpacity>
+          <View style={{width: 45}}></View>
+          {currentTest < testTexts.length-1 ? 
+          <TouchableOpacity
+              style={[styles.rightArrowButton, styles.arrowButton]}
+              onPress={() => {
+                setCurrentTest(prev => prev+1)
+              }}
+          >
+            <Text style={styles.rightArrowButtonText}>&#9654;</Text>
+          </TouchableOpacity> :
+          <TouchableOpacity
+            style={[styles.rightArrowButton, styles.disabledArrowButton]}
+          >
+            <Text style={styles.rightDisabledArrowButtonText}>&#9654;</Text>
+          </TouchableOpacity>
+          }
+
+        </View>
       <StatusBar style="light"/>
     </SafeAreaView>
   );
@@ -195,8 +232,74 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'white'
   },
+  bottomNavbar: {
+    position: 'absolute',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '80%',
+    bottom: 36,
+  },
+  resultsButton: {
+    position: 'absolute',
+    backgroundColor: 'rgb(128, 52, 235)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 90,
+    width: 90,
+    textAlign: 'center',
+    color: 'white',
+    borderRadius: '100%',
+    borderColor: 'white',
+    borderWidth: 2,
+    zIndex: 2,
+  }, 
+  resultsText: {
+    color: 'white',
+  },
+  arrowButton: {
+    zIndex: 1,
+    flexGrow: 1,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 45,
+    marginHorizontal:  10,
+    backgroundColor: 'rgba(124, 124, 124, 1)'
+    
+  },
+  leftArrowButton: {
+    borderTopRightRadius: 0,
+    borderBottomRightRadius: 0
+  },
+  rightArrowButton: {
+    borderTopLeftRadius: 0,
+    borderBottomLeftRadius: 0
+  },
+  leftArrowButtonText: {
+    color: 'white',
+
+  },
+  rightArrowButtonText: {
+    color: 'white',
+  },
+  disabledArrowButton: {
+    zIndex: 1,
+    borderRadius: 8,
+    marginHorizontal:  10,
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 45,
+    backgroundColor: 'rgba(124, 124, 124,0.5)'
+  },
+  leftDisabledArrowButtonText: {
+    color: 'grey',
+  },
+  rightDisabledArrowButtonText: {
+    color: 'grey',
+  },
   testWrapper: {
-    // flex: 1,
     borderRadius: 16,
     overflow: 'hidden',
     borderColor: 'white',
@@ -219,13 +322,11 @@ const styles = StyleSheet.create({
   currentResults: {},
   sectionHeader: {
     width: '100%',
-    // backgroundColor: 'red',
     paddingTop: 32,
     color: 'white',
     textAlign: 'center',
     fontSize: 24,
     paddingBottom: 24,
-    // borderColor: 'none',
     borderTopWidth: 0,
     borderLeftWidth: 0,
     borderRightWidth: 0,
@@ -301,8 +402,8 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: 'white'
   },
-    
   test: {
+    textAlign: 'center',
     paddingVertical: 8,
   },
   input: {
@@ -335,15 +436,6 @@ const styles = StyleSheet.create({
   resetText: {
     color: 'white',
     textAlign: 'center',
-  },
-  resultsButton: {
-    marginVertical: 8,
-    textAlign: 'center',
-    color: 'white',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderColor: 'white',
-    borderWidth: 2
   },
   clearButton: {
     textAlign: 'center',
