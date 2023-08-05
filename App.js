@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ResultsModal from "./components/ResultsModal";
+import Navbar from "./components/Navbar";
 
 export default function App() {
   const [input, setInput] = useState("");
@@ -163,55 +164,11 @@ export default function App() {
         showResults={showResults}
         setShowResults={setShowResults}
       />
-      <View style={styles.bottomNavbar}>
-        {currentTest > 0 ? (
-          <TouchableOpacity
-            style={[styles.leftArrowButton, styles.arrowButton]}
-            onPress={() => {
-              setCurrentTest((prev) => prev - 1);
-            }}
-          >
-            <Text style={styles.leftArrowButtonText}>&#9664;</Text>
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity
-            style={[styles.leftArrowButton, styles.disabledArrowButton]}
-          >
-            <Text style={styles.leftDisabledArrowButtonText}>&#9664;</Text>
-          </TouchableOpacity>
-        )}
-        <TouchableOpacity
-          style={styles.resultsButton}
-          activeOpacity={1}
-          onPress={() => setShowResults(true)}
-        >
-          {/* <Text></Text> */}
-          <Text style={styles.resultsText} numberOfLines={1}>
-            Results
-          </Text>
-        </TouchableOpacity>
-        <View style={{ width: 45 }}></View>
-        {currentTest < testTexts.length - 1 ? (
-          <TouchableOpacity
-            style={[styles.rightArrowButton, styles.arrowButton]}
-            onPress={() => {
-              setCurrentTest((prev) => prev + 1);
-            }}
-          >
-            <Text style={styles.rightArrowButtonText}>&#9654;</Text>
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity
-            style={[styles.rightArrowButton, styles.disabledArrowButton]}
-          >
-            <Text style={styles.rightDisabledArrowButtonText}>&#9654;</Text>
-          </TouchableOpacity>
-        )}
-      </View>
+      <Navbar currentTest={currentTest} setCurrentTest={setCurrentTest} testTexts={testTexts} setShowResults={setShowResults}/>
       <StatusBar style='light' />
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -227,71 +184,6 @@ const styles = StyleSheet.create({
     padding: 20,
     fontWeight: "bold",
     color: "white",
-  },
-  bottomNavbar: {
-    position: "absolute",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "80%",
-    bottom: 36,
-  },
-  resultsButton: {
-    position: "absolute",
-    backgroundColor: "rgb(128, 52, 235)",
-    justifyContent: "center",
-    alignItems: "center",
-    height: 90,
-    width: 90,
-    textAlign: "center",
-    color: "white",
-    borderRadius: "100%",
-    borderColor: "white",
-    borderWidth: 2,
-    zIndex: 2,
-  },
-  resultsText: {
-    color: "white",
-  },
-  arrowButton: {
-    zIndex: 1,
-    flexGrow: 1,
-    borderRadius: 8,
-    justifyContent: "center",
-    alignItems: "center",
-    height: 45,
-    marginHorizontal: 10,
-    backgroundColor: "rgba(124, 124, 124, 1)",
-  },
-  leftArrowButton: {
-    borderTopRightRadius: 0,
-    borderBottomRightRadius: 0,
-  },
-  rightArrowButton: {
-    borderTopLeftRadius: 0,
-    borderBottomLeftRadius: 0,
-  },
-  leftArrowButtonText: {
-    color: "white",
-  },
-  rightArrowButtonText: {
-    color: "white",
-  },
-  disabledArrowButton: {
-    zIndex: 1,
-    borderRadius: 8,
-    marginHorizontal: 10,
-    flexGrow: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    height: 45,
-    backgroundColor: "rgba(124, 124, 124,0.5)",
-  },
-  leftDisabledArrowButtonText: {
-    color: "grey",
-  },
-  rightDisabledArrowButtonText: {
-    color: "grey",
   },
   testWrapper: {
     borderRadius: 16,
