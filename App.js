@@ -9,7 +9,7 @@ export default function App() {
   const [input, setInput] = useState("");
   const testTexts = [
     "The quick brown fox jumps over the lazy dog.",
-    `React Native lets you create truly native apps and doesn’t compromise your users’ experiences. It provides a core set of platform agnostic native components like View, Text, and Image that map directly to the platform’s native UI building blocks.`,
+    `React Native lets you create truly native apps and doesn't compromise your users' experiences. It provides a core set of platform agnostic native components like View, Text, and Image that map directly to the platform's native UI building blocks.`,
   ];
   const [currentTest, setCurrentTest] = useState(0);
   const [startTime, setStartTime] = useState(0);
@@ -26,12 +26,8 @@ export default function App() {
     if (input.length === 1 && newText === "") {
       setInput("");
     }
-    if (
-      newText.length >= 1 &&
-      newText.slice(0, -1) ===
-        testTexts[currentTest].slice(0, newText.length - 1)
-    ) {
-      setInput(newText);
+    if (newText.length >= 1 && newText.slice(0, -1) === testTexts[currentTest].slice(0, newText.length - 1)) {
+        setInput(newText);
     }
   }
   const clearData = async (value) => {
@@ -139,6 +135,7 @@ export default function App() {
         </View>
         <TextInput
           style={styles.input}
+          keyboardType={'ascii-capable'}
           placeholder='Start typing to begin!'
           placeholderTextColor='white'
           onChangeText={(newText) => handleStart(newText)}
