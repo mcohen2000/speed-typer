@@ -110,6 +110,7 @@ export default function App() {
   }, [input, isActive]);
   useEffect(() => {
     getData();
+    handleReset();
   }, [currentTest]);
 
   return (
