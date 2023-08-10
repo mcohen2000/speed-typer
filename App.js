@@ -61,7 +61,9 @@ export default function App() {
   const getData = async () => {
     try {
       const value = await AsyncStorage.getItem(`${currentTest}`);
-      if (value !== null) {
+      if (value === null) {
+        setResults([]);
+      }else{
         setResults(JSON.parse(value));
       }
     } catch (e) {
