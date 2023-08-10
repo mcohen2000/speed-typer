@@ -9,6 +9,7 @@ export default function App() {
   const [input, setInput] = useState("");
   const testTexts = [
     "The quick brown fox jumps over the lazy dog.",
+    `React Native combines the best parts of native development with React, a best-in-class JavaScript library for building user interfaces.`,
     `React Native lets you create truly native apps and doesn't compromise your users' experiences. It provides a core set of platform agnostic native components like View, Text, and Image that map directly to the platform's native UI building blocks.`,
   ];
   const [currentTest, setCurrentTest] = useState(0);
