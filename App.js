@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { useState, useEffect } from "react";
-import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity, Image } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ResultsModal from "./components/ResultsModal";
 import Navbar from "./components/Navbar";
@@ -115,7 +115,10 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Speed Typer</Text>
+      <View style={styles.titleWrapper}>
+        <Image style={styles.logo} source={require('./assets/speedtyper.png')}/>
+        <Text style={styles.title}>Speed Typer</Text>
+      </View>
       <View style={styles.testWrapper}>
         <View style={styles.currentResults}>
           <Text style={styles.timer}>{timer.toFixed(1)}s</Text>
@@ -180,9 +183,20 @@ const styles = StyleSheet.create({
     justifyContent: "start",
     overflow: "hidden",
   },
+  titleWrapper:{
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+
+  },
+  logo: {
+    width: 40,
+    height: 40
+  },
   title: {
     fontSize: 20,
-    padding: 20,
+    paddingVertical: 20,
+    paddingLeft: 8,
     fontWeight: "bold",
     color: "white",
   },
