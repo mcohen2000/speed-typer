@@ -1,4 +1,5 @@
 # Speed Typer
+[Deployed Site on Netlify](https://react-native-speed-typer.netlify.app/)
 
 Tech Stack: React Native
 
